@@ -13,6 +13,7 @@ const nextConfig = {
     return webpackConfig
   },
   output: 'standalone',
+  devIndicators: false,
 }
 
 export default withPayload(nextConfig, { devBundleServerPackages: false })
