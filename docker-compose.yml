@@ -2,6 +2,7 @@ version: '3'
 
 services:
   payload:
+    container_name: lms
     image: node:18-alpine
     ports:
       - '3000:3000'
@@ -31,11 +32,12 @@ services:
   # Uncomment the following to use postgres
   postgres:
     restart: always
+    container_name: psql
     image: postgres:latest
     volumes:
       - pgdata:/var/lib/postgresql/data
-    ports:
-      - '5432:5432'
+    env_file:
+      - .env.db
 
 volumes:
   # data:
