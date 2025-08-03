@@ -48,3 +48,8 @@ node_modules/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+/uploads
+/temp
+/.vscode/*
+/.pnpm-store/*
