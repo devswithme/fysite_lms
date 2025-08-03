@@ -8,19 +8,59 @@ import { fileURLToPath } from 'url'
 import sharp from 'sharp'
 
 import { Users } from './collections/Users'
-import { Media } from './collections/Media'
+import { Courses } from './collections/Courses'
+import {Requests} from "@/collections/Requests";
+import {Tasks} from "@/collections/Tasks";
+import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
 export default buildConfig({
+  routes: {
+    admin: '/'
+  },
+  email: nodemailerAdapter({
+    defaultFromName: 'fysite.id',
+    defaultFromAddress: 'cs@fysite.id',
+    transportOptions: {
+      host: process.env.SMTP_HOST,
+      port: 587,
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
+    },
+  }),
   admin: {
+    avatar: 'gravatar',
+    components: {
+      graphics: {
+        Icon: "@/components/fav",
+        Logo: "@/components/logo",
+      },
+    },
+    meta: {
+      titleSuffix: "- fysite.id",
+      icons: [
+        {
+          url: "/fav.svg",
+        },
+      ],
+    },
     user: Users.slug,
     importMap: {
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media],
+  collections: [Requests, Courses, Tasks, Users],
+  upload: {
+    useTempFiles: true,
+    tempFileDir: './temp/',
+    limits: {
+      fileSize: 2000000 // 2 MB,
+    },
+  },
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
@@ -31,9 +71,4 @@ export default buildConfig({
       connectionString: process.env.DATABASE_URI || '',
     },
   }),
-  sharp,
-  plugins: [
-    payloadCloudPlugin(),
-    // storage-adapter-placeholder
-  ],
 })

@@ -67,22 +67,26 @@ export interface Config {
   };
   blocks: {};
   collections: {
+    requests: Request;
+    courses: Course;
+    tasks: Task;
     users: User;
-    media: Media;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
   collectionsJoins: {};
   collectionsSelect: {
+    requests: RequestsSelect<false> | RequestsSelect<true>;
+    courses: CoursesSelect<false> | CoursesSelect<true>;
+    tasks: TasksSelect<false> | TasksSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
-    media: MediaSelect<false> | MediaSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
   };
   db: {
-    defaultIDType: string;
+    defaultIDType: number;
   };
   globals: {};
   globalsSelect: {};
@@ -115,10 +119,45 @@ export interface UserAuthOperations {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "requests".
+ */
+export interface Request {
+  id: number;
+  status: 'pending' | 'rejected' | 'accepted';
+  feedback?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  belongsTo: number | User;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
 export interface User {
-  id: string;
+  id: number;
+  role: 'admin' | 'tenant' | 'student';
+  name: string;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -126,6 +165,8 @@ export interface User {
   resetPasswordExpiration?: string | null;
   salt?: string | null;
   hash?: string | null;
+  _verified?: boolean | null;
+  _verificationToken?: string | null;
   loginAttempts?: number | null;
   lockUntil?: string | null;
   sessions?:
@@ -139,11 +180,13 @@ export interface User {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media".
+ * via the `definition` "courses".
  */
-export interface Media {
-  id: string;
-  alt: string;
+export interface Course {
+  id: number;
+  code?: string | null;
+  belongsTo?: (number | null) | User;
+  grantedTo?: (number | User)[] | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -153,28 +196,69 @@ export interface Media {
   filesize?: number | null;
   width?: number | null;
   height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tasks".
+ */
+export interface Task {
+  id: number;
+  status: 'pending' | 'rejected' | 'accepted';
+  course: number | Course;
+  feedback?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  belongsTo: number | User;
+  tenant?: (number | null) | User;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
-  id: string;
+  id: number;
   document?:
     | ({
-        relationTo: 'users';
-        value: string | User;
+        relationTo: 'requests';
+        value: number | Request;
       } | null)
     | ({
-        relationTo: 'media';
-        value: string | Media;
+        relationTo: 'courses';
+        value: number | Course;
+      } | null)
+    | ({
+        relationTo: 'tasks';
+        value: number | Task;
+      } | null)
+    | ({
+        relationTo: 'users';
+        value: number | User;
       } | null);
   globalSlug?: string | null;
   user: {
     relationTo: 'users';
-    value: string | User;
+    value: number | User;
   };
   updatedAt: string;
   createdAt: string;
@@ -184,10 +268,10 @@ export interface PayloadLockedDocument {
  * via the `definition` "payload-preferences".
  */
 export interface PayloadPreference {
-  id: string;
+  id: number;
   user: {
     relationTo: 'users';
-    value: string | User;
+    value: number | User;
   };
   key?: string | null;
   value?:
@@ -207,7 +291,7 @@ export interface PayloadPreference {
  * via the `definition` "payload-migrations".
  */
 export interface PayloadMigration {
-  id: string;
+  id: number;
   name?: string | null;
   batch?: number | null;
   updatedAt: string;
@@ -215,32 +299,12 @@ export interface PayloadMigration {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "users_select".
+ * via the `definition` "requests_select".
  */
-export interface UsersSelect<T extends boolean = true> {
-  updatedAt?: T;
-  createdAt?: T;
-  email?: T;
-  resetPasswordToken?: T;
-  resetPasswordExpiration?: T;
-  salt?: T;
-  hash?: T;
-  loginAttempts?: T;
-  lockUntil?: T;
-  sessions?:
-    | T
-    | {
-        id?: T;
-        createdAt?: T;
-        expiresAt?: T;
-      };
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media_select".
- */
-export interface MediaSelect<T extends boolean = true> {
-  alt?: T;
+export interface RequestsSelect<T extends boolean = true> {
+  status?: T;
+  feedback?: T;
+  belongsTo?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -250,8 +314,70 @@ export interface MediaSelect<T extends boolean = true> {
   filesize?: T;
   width?: T;
   height?: T;
-  focalX?: T;
-  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "courses_select".
+ */
+export interface CoursesSelect<T extends boolean = true> {
+  code?: T;
+  belongsTo?: T;
+  grantedTo?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tasks_select".
+ */
+export interface TasksSelect<T extends boolean = true> {
+  status?: T;
+  course?: T;
+  feedback?: T;
+  belongsTo?: T;
+  tenant?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "users_select".
+ */
+export interface UsersSelect<T extends boolean = true> {
+  role?: T;
+  name?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  email?: T;
+  resetPasswordToken?: T;
+  resetPasswordExpiration?: T;
+  salt?: T;
+  hash?: T;
+  _verified?: T;
+  _verificationToken?: T;
+  loginAttempts?: T;
+  lockUntil?: T;
+  sessions?:
+    | T
+    | {
+        id?: T;
+        createdAt?: T;
+        expiresAt?: T;
+      };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

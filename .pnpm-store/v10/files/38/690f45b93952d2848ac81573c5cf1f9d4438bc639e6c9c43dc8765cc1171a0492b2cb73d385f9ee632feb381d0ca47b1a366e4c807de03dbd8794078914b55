@@ -1,0 +1,1 @@
+{"version":3,"file":"usePreviewURL.d.ts","sourceRoot":"","sources":["../../../src/elements/PreviewButton/usePreviewURL.tsx"],"names":[],"mappings":"AAUA,eAAO,MAAM,aAAa,QAAO;IAC/B,kBAAkB,EAAE,CAAC,EAAE,iBAAiB,EAAE,EAAE;QAAE,iBAAiB,CAAC,EAAE,OAAO,CAAA;KAAE,KAAK,IAAI,CAAA;IACpF,SAAS,EAAE,OAAO,CAAA;IAClB,KAAK,EAAE,MAAM,CAAA;IACb,UAAU,EAAE,MAAM,CAAA;CAqFnB,CAAA"}

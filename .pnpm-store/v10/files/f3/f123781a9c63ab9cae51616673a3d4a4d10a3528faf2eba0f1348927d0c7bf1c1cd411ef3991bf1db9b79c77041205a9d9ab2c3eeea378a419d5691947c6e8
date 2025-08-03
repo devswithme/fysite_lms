@@ -1,0 +1,1 @@
+{"version":3,"file":"index.d.ts","sourceRoot":"","sources":["../../../src/elements/SortHeader/index.tsx"],"names":[],"mappings":"AAEA,OAAO,KAA4B,MAAM,OAAO,CAAA;AAIhD,OAAO,cAAc,CAAA;AAGrB,MAAM,MAAM,eAAe,GAAG;IAC5B,QAAQ,CAAC,UAAU,CAAC,EAAE,WAAW,GAAG,SAAS,CAAA;IAC7C,QAAQ,CAAC,OAAO,CAAC,EAAE,OAAO,CAAA;CAC3B,CAAA;AAkCD,eAAO,MAAM,UAAU,EAAE,KAAK,CAAC,EAAE,CAAC,eAAe,CAwChD,CAAA"}

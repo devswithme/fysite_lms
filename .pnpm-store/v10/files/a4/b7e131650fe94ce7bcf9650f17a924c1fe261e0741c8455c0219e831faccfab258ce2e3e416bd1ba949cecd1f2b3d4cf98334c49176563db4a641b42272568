@@ -1,0 +1,74 @@
+import { jsx as _jsx } from "react/jsx-runtime";
+import { RenderServerComponent } from '@payloadcms/ui/elements/RenderServerComponent';
+import React from 'react';
+import { ShouldRenderTabs } from './ShouldRenderTabs.js';
+import { DocumentTab } from './Tab/index.js';
+import { getTabs } from './tabs/index.js';
+const baseClass = 'doc-tabs';
+export const DocumentTabs = props => {
+  const {
+    collectionConfig,
+    globalConfig,
+    i18n,
+    payload,
+    permissions
+  } = props;
+  const {
+    config
+  } = payload;
+  const tabs = getTabs({
+    collectionConfig,
+    globalConfig
+  });
+  return /*#__PURE__*/_jsx(ShouldRenderTabs, {
+    children: /*#__PURE__*/_jsx("div", {
+      className: baseClass,
+      children: /*#__PURE__*/_jsx("div", {
+        className: `${baseClass}__tabs-container`,
+        children: /*#__PURE__*/_jsx("ul", {
+          className: `${baseClass}__tabs`,
+          children: tabs?.map(({
+            tab,
+            viewPath
+          }, index) => {
+            const {
+              condition
+            } = tab || {};
+            const meetsCondition = !condition || condition({
+              collectionConfig,
+              config,
+              globalConfig,
+              permissions
+            });
+            if (!meetsCondition) {
+              return null;
+            }
+            if (tab?.Component) {
+              return RenderServerComponent({
+                clientProps: {
+                  path: viewPath
+                },
+                Component: tab.Component,
+                importMap: payload.importMap,
+                key: `tab-${index}`,
+                serverProps: {
+                  collectionConfig,
+                  globalConfig,
+                  i18n,
+                  payload,
+                  permissions
+                }
+              });
+            }
+            return /*#__PURE__*/_jsx(DocumentTab, {
+              path: viewPath,
+              ...props,
+              ...tab
+            }, `tab-${index}`);
+          })
+        })
+      })
+    })
+  });
+};
+//# sourceMappingURL=index.js.map

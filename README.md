@@ -48,7 +48,7 @@ See the [Collections](https://payloadcms.com/docs/configuration/collections) doc
 
   For additional help, see the official [Auth Example](https://github.com/payloadcms/payload/tree/main/examples/auth) or the [Authentication](https://payloadcms.com/docs/authentication/overview#authentication-overview) docs.
 
-- #### Media
+- #### Courses
 
   This is the uploads enabled collection. It features pre-configured sizes, focal point and manual resizing to help you manage your pictures.
 

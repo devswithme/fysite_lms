@@ -1,0 +1,31 @@
+import type { ClientCollectionConfig, ClientConfig, CollectionConfig, CollectionPreferences, Column, Field, ImportMap, ListQuery, PaginatedDocs, Payload, SanitizedCollectionConfig, ViewTypes } from 'payload';
+import { type I18nClient } from '@payloadcms/translations';
+import React from 'react';
+export declare const renderFilters: (fields: Field[], importMap: ImportMap) => Map<string, React.ReactNode>;
+export declare const renderTable: ({ clientCollectionConfig, clientConfig, collectionConfig, collections, columns: columnsFromArgs, customCellProps, data, enableRowSelections, groupByFieldPath, groupByValue, heading, i18n, key, orderableFieldName, payload, query, renderRowTypes, tableAppearance, useAsTitle, viewType, }: {
+    clientCollectionConfig?: ClientCollectionConfig;
+    clientConfig?: ClientConfig;
+    collectionConfig?: SanitizedCollectionConfig;
+    collections?: string[];
+    columns?: CollectionPreferences["columns"];
+    customCellProps?: Record<string, unknown>;
+    data: PaginatedDocs;
+    drawerSlug?: string;
+    enableRowSelections: boolean;
+    groupByFieldPath?: string;
+    groupByValue?: string;
+    heading?: string;
+    i18n: I18nClient;
+    key?: string;
+    orderableFieldName: string;
+    payload: Payload;
+    query?: ListQuery;
+    renderRowTypes?: boolean;
+    tableAppearance?: "condensed" | "default";
+    useAsTitle: CollectionConfig["admin"]["useAsTitle"];
+    viewType?: ViewTypes;
+}) => {
+    columnState: Column[];
+    Table: React.ReactNode;
+};
+//# sourceMappingURL=renderTable.d.ts.map
