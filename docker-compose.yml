@@ -1,36 +1,33 @@
-version: '3'
+version: '3.8'
 
 services:
   payload:
     container_name: lms
-    image: node:18-alpine
+    build:
+      context: .
+      dockerfile: Dockerfile
     expose:
       - '3000'
-    volumes:
-      - .:/home/node/app
-      - node_modules:/home/node/app/node_modules
-    working_dir: /home/node/app/
-    command: sh -c "corepack enable && corepack prepare pnpm@latest --activate && pnpm install && pnpm start"
-    depends_on:
-      - postgres
     env_file:
       - .env
-
     environment:
       - VIRTUAL_HOST=app.fysite.id
       - LETSENCRYPT_HOST=app.fysite.id
       - LETSENCRYPT_EMAIL=testedprojected@gmail.com
+    depends_on:
+      - postgres
+    restart: unless-stopped
     networks:
       - nginx-proxy
 
   postgres:
-    restart: always
     container_name: psql
     image: postgres:latest
-    volumes:
-      - pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
     env_file:
       - .env.db
+    volumes:
+      - pgdata:/var/lib/postgresql/data
     networks:
       - nginx-proxy
 
@@ -40,4 +37,3 @@ networks:
 
 volumes:
   pgdata:
-  node_modules:
