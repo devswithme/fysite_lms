@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   payload:
     container_name: lms
@@ -10,24 +8,22 @@ services:
       - '3000'
     env_file:
       - .env
+    depends_on:
+      - postgres
+    networks:
+      - nginx-proxy
     environment:
       - VIRTUAL_HOST=app.fysite.id
       - LETSENCRYPT_HOST=app.fysite.id
       - LETSENCRYPT_EMAIL=testedprojected@gmail.com
-    depends_on:
-      - postgres
-    restart: unless-stopped
-    networks:
-      - nginx-proxy
 
   postgres:
     container_name: psql
-    image: postgres:latest
-    restart: unless-stopped
-    env_file:
-      - .env.db
+    image: postgres:15
     volumes:
       - pgdata:/var/lib/postgresql/data
+    env_file:
+      - .env.db
     networks:
       - nginx-proxy
 
