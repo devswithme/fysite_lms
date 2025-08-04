@@ -4,32 +4,25 @@ services:
   payload:
     container_name: lms
     image: node:18-alpine
-    ports:
-      - '3000:3000'
+    expose:
+      - '3000'
     volumes:
       - .:/home/node/app
       - node_modules:/home/node/app/node_modules
     working_dir: /home/node/app/
     command: sh -c "corepack enable && corepack prepare pnpm@latest --activate && pnpm install && pnpm dev"
     depends_on:
-      # - mongo
       - postgres
     env_file:
       - .env
 
-  # Ensure your DATABASE_URI uses 'mongo' as the hostname ie. mongodb://mongo/my-db-name
-  # mongo:
-  #   image: mongo:latest
-  #   ports:
-  #     - '27017:27017'
-  #   command:
-  #     - --storageEngine=wiredTiger
-  #   volumes:
-  #     - data:/data/db
-  #   logging:
-  #     driver: none
+    environment:
+      - VIRTUAL_HOST=app.fysite.id
+      - LETSENCRYPT_HOST=app.fysite.id
+      - LETSENCRYPT_EMAIL=testedprojected@gmail.com
+    networks:
+      - nginx-proxy
 
-  # Uncomment the following to use postgres
   postgres:
     restart: always
     container_name: psql
@@ -38,8 +31,13 @@ services:
       - pgdata:/var/lib/postgresql/data
     env_file:
       - .env.db
+    networks:
+      - nginx-proxy
+
+networks:
+  nginx-proxy:
+    external: true
 
 volumes:
-  # data:
   pgdata:
   node_modules:
