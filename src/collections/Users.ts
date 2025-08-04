@@ -9,7 +9,7 @@ export const Users: CollectionConfig = {
     hidden: ({ user }) => user?.role != 'admin',
   },
   access: {
-    create: ({ req }) => isServer(req),
+    create: ({ req }) => isRole(req, 'admin') || isServer(req),
     read: ({ req }) => Boolean(req.user) || isServer(req),
     update: ({ req }) => isRole(req, 'admin'),
     delete: ({ req }) => isRole(req, 'admin'),
