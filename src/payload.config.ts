@@ -9,8 +9,8 @@ import sharp from 'sharp'
 
 import { Users } from './collections/Users'
 import { Courses } from './collections/Courses'
-import {Requests} from "@/collections/Requests";
-import {Tasks} from "@/collections/Tasks";
+import { Requests } from '@/collections/Requests'
+import { Tasks } from '@/collections/Tasks'
 import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
 
 const filename = fileURLToPath(import.meta.url)
@@ -18,11 +18,11 @@ const dirname = path.dirname(filename)
 
 export default buildConfig({
   routes: {
-    admin: '/'
+    admin: '/',
   },
   email: nodemailerAdapter({
-    defaultFromName: 'fysite.id',
-    defaultFromAddress: 'cs@fysite.id',
+    defaultFromName: process.env.APP_NAME!,
+    defaultFromAddress: process.env.SMTP_USER!,
     transportOptions: {
       host: process.env.SMTP_HOST,
       port: 587,
@@ -36,15 +36,15 @@ export default buildConfig({
     avatar: 'gravatar',
     components: {
       graphics: {
-        Icon: "@/components/fav",
-        Logo: "@/components/logo",
+        Icon: '@/components/fav',
+        Logo: '@/components/logo',
       },
     },
     meta: {
-      titleSuffix: "- fysite.id",
+      titleSuffix: `- ${process.env.APP_NAME}`,
       icons: [
         {
-          url: "/fav.svg",
+          url: '/fav.svg',
         },
       ],
     },
@@ -58,7 +58,7 @@ export default buildConfig({
     useTempFiles: true,
     tempFileDir: './temp/',
     limits: {
-      fileSize: 2000000 // 2 MB,
+      fileSize: 2000000, // 2 MB,
     },
   },
   editor: lexicalEditor(),
