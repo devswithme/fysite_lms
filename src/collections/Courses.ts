@@ -1,5 +1,6 @@
 import type { Access, CollectionConfig, PayloadRequest } from 'payload'
 import { isRole, isServer } from '@/access'
+import path from 'path'
 
 export const Courses: CollectionConfig = {
   slug: 'courses',
@@ -69,6 +70,6 @@ export const Courses: CollectionConfig = {
     mimeTypes: ['application/zip'],
     hideRemoveFile: true,
     focalPoint: false,
-    staticDir: './uploads/courses',
+    staticDir: path.resolve(__dirname, '../../uploads'),
   },
 }
